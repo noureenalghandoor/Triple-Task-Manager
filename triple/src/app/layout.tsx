@@ -1,13 +1,13 @@
 import type { Metadata } from "next";
 import { Poppins } from "next/font/google";
 import "./globals.css";
-import {cn} from "@/lib/utils";
-import {QueryProvider} from "@/components/query-provider";
+import { cn } from "@/lib/utils";
+import { QueryProvider } from "@/features/general/query-provider";
 
 const poppins = Poppins({
-    subsets: ['latin'],
-    weight: ['300', '400', '500', '600', '700'],
-    display: 'swap',
+  subsets: ["latin"],
+  weight: ["300", "400", "500", "600", "700"],
+  display: "swap",
 });
 
 export const metadata: Metadata = {
@@ -22,12 +22,8 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body
-        className={cn(poppins.className, 'antialiased min-h-screen')}
-      >
-          <QueryProvider>
-            {children}
-          </QueryProvider>
+      <body className={cn(poppins.className, "antialiased min-h-screen")}>
+        <QueryProvider>{children}</QueryProvider>
       </body>
     </html>
   );
