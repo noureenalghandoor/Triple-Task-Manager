@@ -1,10 +1,11 @@
+"use client";
+
 import React from "react";
 import {
   Card,
   CardHeader,
   CardTitle,
   CardContent,
-  CardFooter,
   CardDescription,
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -26,9 +27,11 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { InfoIcon } from "lucide-react";
 import { registerSchema as formSchema } from "@/features/auth/schemas";
 import { useRegister } from "@/features/auth/api/use-register";
+import { useRouter } from "next/navigation";
 
 const SignUpCard = () => {
-  const { mutate } = useRegister();
+  const { mutate, isPending } = useRegister();
+  const router = useRouter();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -40,7 +43,15 @@ const SignUpCard = () => {
   });
 
   const onSubmit = (values: z.infer<typeof formSchema>) => {
-    mutate({ json: values });
+    mutate(
+      { json: values },
+      {
+        onSuccess: () => {
+          router.push("/");
+          router.refresh();
+        },
+      },
+    );
   };
 
   const pathname = usePathname();
@@ -125,7 +136,7 @@ const SignUpCard = () => {
               )}
             />
 
-            <Button disabled={false} size={"lg"} className={"w-full"}>
+            <Button disabled={isPending} size={"lg"} className={"w-full"}>
               Sign Up
             </Button>
 
@@ -136,7 +147,7 @@ const SignUpCard = () => {
                 variant={"secondary"}
                 className="w-full flex items-center justify-center gap-2"
                 size="lg"
-                disabled={false}
+                disabled={isPending}
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -168,7 +179,7 @@ const SignUpCard = () => {
                 variant={"secondary"}
                 className="w-full flex items-center justify-center gap-2"
                 size="lg"
-                disabled={false}
+                disabled={isPending}
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"

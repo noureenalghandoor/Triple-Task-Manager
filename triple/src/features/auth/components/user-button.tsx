@@ -1,6 +1,6 @@
 "use client";
 
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -9,18 +9,16 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Separator } from "@/features/general/OR";
 import { useCurrent } from "@/features/auth/api/use-current";
-import { Loader } from "lucide-react";
+import { Loader, LogOut } from "lucide-react";
+import { useLogout } from "@/features/auth/api/use-logout";
 
 export const UserButton = () => {
   const { data: user, isLoading } = useCurrent();
+  const { mutate: logout } = useLogout();
 
   if (isLoading) {
     return (
-      <div
-        className={
-          "size-10 rounded-full flex items-center justify-center bg-background border border-border"
-        }
-      >
+      <div className={"size-10 rounded-full flex items-center justify-center"}>
         <Loader className={"size-4 animate-spin text-muted-foreground"} />
       </div>
     );
@@ -37,14 +35,53 @@ export const UserButton = () => {
     : (email.charAt(0).toUpperCase() ?? "T");
 
   return (
-    <Avatar
-      className={"size-10 hover:opacity-75 transition border border-foreground"}
-    >
-      <AvatarFallback
-        className={"bg-accent-foreground font-medium text-neutral-500"}
+    <DropdownMenu modal={false}>
+      <DropdownMenuTrigger className={"outline-none relative"}>
+        <Avatar className={"size-10 hover:opacity-75 transition"}>
+          <AvatarFallback
+            className={
+              "bg-foreground font-medium text-neutral-500 flex items-center justify-center"
+            }
+          >
+            {avatarFallback}
+          </AvatarFallback>
+        </Avatar>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent
+        align={"end"}
+        side={"bottom"}
+        className={"w-60"}
+        sideOffset={10}
       >
-        {avatarFallback}
-      </AvatarFallback>
-    </Avatar>
+        <div
+          className={
+            "flex flex-col items-center justify-center gap-2 px-2.5 py-4"
+          }
+        >
+          <Avatar className={"size-13"}>
+            <AvatarFallback
+              className={
+                "bg-foreground font-medium text-xl text-neutral-500 flex items-center justify-center"
+              }
+            >
+              {avatarFallback}
+            </AvatarFallback>
+          </Avatar>
+          <div className={"flex flex-col items-center justify-center"}>
+            <p className={"text-sm font-medium"}>{name || "Triple User"}</p>
+          </div>
+        </div>
+        <Separator label={"Account"} className={"mb-1"} />
+        <DropdownMenuItem
+          className={
+            "h-10 flex items-center justify-center text-amber-700 font-medium cursor-pointer"
+          }
+          onClick={() => logout()}
+        >
+          <LogOut className={"size-4 mr-2 text-amber-700"} />
+          Log Out
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
   );
 };

@@ -1,11 +1,7 @@
+"use client";
+
 import React from "react";
-import {
-  Card,
-  CardHeader,
-  CardTitle,
-  CardContent,
-  CardFooter,
-} from "@/components/ui/card";
+import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/features/general/OR";
@@ -23,9 +19,11 @@ import { usePathname } from "next/dist/client/components/navigation";
 import Link from "next/link";
 import { loginSchema } from "@/features/auth/schemas";
 import { useLogin } from "@/features/auth/api/use-login";
+import { useRouter } from "next/navigation";
 
 const SignInCard = () => {
-  const { mutate } = useLogin();
+  const { mutate, isPending } = useLogin();
+  const router = useRouter();
 
   const form = useForm<z.infer<typeof loginSchema>>({
     resolver: zodResolver(loginSchema),
@@ -36,7 +34,15 @@ const SignInCard = () => {
   });
 
   const onSubmit = (values: z.infer<typeof loginSchema>) => {
-    mutate({ json: values });
+    mutate(
+      { json: values },
+      {
+        onSuccess: () => {
+          router.push("/");
+          router.refresh();
+        },
+      },
+    );
   };
 
   const pathname = usePathname();
@@ -88,7 +94,7 @@ const SignInCard = () => {
 
             <Button
               type="submit"
-              disabled={false}
+              disabled={isPending}
               size={"lg"}
               className={"w-full"}
             >
@@ -101,7 +107,7 @@ const SignInCard = () => {
                 variant={"secondary"}
                 className="w-full flex items-center justify-center gap-2"
                 size="lg"
-                disabled={false}
+                disabled={isPending}
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -133,7 +139,7 @@ const SignInCard = () => {
                 variant={"secondary"}
                 className="w-full flex items-center justify-center gap-2"
                 size="lg"
-                disabled={false}
+                disabled={isPending}
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
