@@ -11,7 +11,6 @@ export default async function Home() {
 
   return (
     <div>
-      This is a home page
       <CreateWorkspaceForm />
     </div>
   );
